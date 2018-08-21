@@ -34,3 +34,10 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.name} --> {self.post.title}'
+
+
+class Like(models.Model):
+    name = models.CharField(max_length=50, null=False, blank=False)
+    email = models.EmailField(null=False, blank=False)
+    is_like = models.BooleanField(default=True)
+    post = models.ForeignKey(Post)
