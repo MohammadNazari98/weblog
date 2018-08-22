@@ -24,6 +24,7 @@ class Post(models.Model):
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     author = models.ForeignKey(AUTH_USER_MODEL)
     published = PublishedManager()
+    objects = models.Manager()
     is_enable = models.BooleanField(default=True)
 
     def __str__(self):
