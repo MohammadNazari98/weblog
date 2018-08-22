@@ -1,0 +1,21 @@
+{% extends 'blog/template.html' %}
+
+{% block header %}
+
+<title> {{ post.title }} </title>
+
+{% endblock %}
+
+{% block content %}
+
+<p>Title: {{ post.title }}</p>
+<br>
+<p>Content: {{ post.content }}</p>
+<br>
+<p>Status: {{ post.status }}</p>
+<br>
+<p>Date: {{ post.last_modified }}</p>
+<br>
+<p>Author: {{ post.author.username }}</p>
+
+{% endblock %}
