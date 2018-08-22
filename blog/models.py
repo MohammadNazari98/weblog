@@ -52,6 +52,9 @@ class Comment(models.Model):
     objects = models.Manager()
     is_enable = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = ('post', 'email')
+
     def __str__(self):
         return f'{self.name} --> {self.post.title}'
 
@@ -61,6 +64,9 @@ class Like(models.Model):
     email = models.EmailField(null=False, blank=False)
     is_like = models.BooleanField(default=True)
     post = models.ForeignKey(Post, related_name='likes')
+
+    class Meta:
+        unique_together = ('post', 'email')
 
     def __str__(self):
         return f'{self.name} --> {self.post.title}'

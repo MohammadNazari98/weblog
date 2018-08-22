@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 from django.shortcuts import get_object_or_404, get_list_or_404
+from django.db.utils import IntegrityError
 from .forms import AddNewComment, AddNewLike
 from .models import Post
 
@@ -34,9 +35,14 @@ def post(request, year, month, day, title):
                 # TODO: using date for filtering post
                 post_title = request.path.split('/')[-2]
                 post = Post.published.get(title=post_title)
-                new_like.post = post
-                new_like.save()
-                result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+                try:
+                    new_like.post = post
+                    new_like.save()
+                    result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+                except IntegrityError:
+                    result = {'title': 'failed',
+                              'body': 'Error: you can only add one like or dislike per post',
+                              'url': request.path}
             else:
                 result = {'title': 'failed', 'body': 'could not added', 'url': request.path}
 
@@ -50,10 +56,15 @@ def post(request, year, month, day, title):
                 # TODO: using date for filtering post
                 post_title = request.path.split('/')[-2]
                 post = Post.published.get(title=post_title)
-                new_comment.post = post
-                new_comment.save()
-                result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+                try:
+                    new_comment.post = post
+                    new_comment.save()
+                    result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+                except IntegrityError:
+                    result = {'title': 'failed',
+                              'body': 'Error: you can only add one comment per post',
+                              'url': request.path}
             else:
-                result = {'title': 'failed', 'body': 'could not added', 'url': request.path}
+                result = {'title': 'failed', 'body': 'Error: could not added', 'url': request.path}
 
             return render(request, 'blog/result.html', result)
