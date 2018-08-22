@@ -1,10 +1,8 @@
 from django.shortcuts import render
-from .models import Post, Comment, Like
 from django.views.decorators.http import require_GET
-from django.views.decorators.csrf import csrf_exempt
-from django.http.response import HttpResponse
-import datetime
 from django.shortcuts import get_object_or_404, get_list_or_404
+from .forms import AddNewComment, AddNewLike
+from .models import Post
 
 
 def index(request):
@@ -17,11 +15,45 @@ def posts(request):
     return render(request, 'blog/posts.html', {'posts': posts})
 
 
-@csrf_exempt
 def post(request, year, month, day, title):
+    # TODO: using date for filtering post
     post = get_object_or_404(Post.published, title=title)
 
     if request.method == 'GET':
-        return render(request, 'blog/post.html', {'post': post})
+        comment_form = AddNewComment()
+        like_form = AddNewLike()
+        return render(request, 'blog/post.html', {'post': post, 'comment_form': comment_form, 'like_form': like_form})
+
     elif request.method == 'POST':
-        pass
+
+        if request.POST['source'] == 'like_form':
+            like_form = AddNewLike(request.POST)
+
+            if like_form.is_valid():
+                new_like = like_form.save(commit=False)
+                # TODO: using date for filtering post
+                post_title = request.path.split('/')[-2]
+                post = Post.published.get(title=post_title)
+                new_like.post = post
+                new_like.save()
+                result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+            else:
+                result = {'title': 'failed', 'body': 'could not added', 'url': request.path}
+
+            return render(request, 'blog/result.html', result)
+
+        elif request.POST['source'] == 'comment_form':
+            comment_form = AddNewComment(request.POST)
+
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                # TODO: using date for filtering post
+                post_title = request.path.split('/')[-2]
+                post = Post.published.get(title=post_title)
+                new_comment.post = post
+                new_comment.save()
+                result = {'title': 'success', 'body': 'successfully added', 'url': request.path}
+            else:
+                result = {'title': 'failed', 'body': 'could not added', 'url': request.path}
+
+            return render(request, 'blog/result.html', result)

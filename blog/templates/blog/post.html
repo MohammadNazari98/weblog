@@ -9,13 +9,41 @@
 {% block content %}
 
 <p>Title: {{ post.title }}</p>
-<br>
 <p>Content: {{ post.content }}</p>
-<br>
-<p>Status: {{ post.status }}</p>
-<br>
 <p>Date: {{ post.last_modified }}</p>
-<br>
 <p>Author: {{ post.author.username }}</p>
+<hr>
+{% if post.comments.all %}
+<p>Comments:</p>
+<ul>
+    {% for comment in post.comments.all %}
+        <li>{{ comment.content }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>There is no any comments</p>
+{% endif %}
+
+<hr>
+<p>likes: {{ post.count_of_likes }}</p>
+<p>dislikes: {{ post.count_of_dislikes }}</p>
+
+
+<hr>
+<p>Adding new comment:</p>
+<form method="POST" action=".">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="hidden" name="source" value="comment_form">
+    <input type="submit" value="Send">
+</form>
+<hr>
+<p>Adding new Like:</p>
+<form method="POST" action=".">
+    {% csrf_token %}
+    {{ like_form.as_p }}
+    <input type="hidden" name="source" value="like_form">
+    <input type="submit" value="Send">
+</form>
 
 {% endblock %}
