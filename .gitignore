@@ -2,4 +2,4 @@ __pycache__/
 *.py[cod]
 .idea/
 weblog/db_config.py
-
+notes.txt
