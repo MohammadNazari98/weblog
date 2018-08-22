@@ -8,12 +8,22 @@
 
 {% block content %}
 
+{% if posts %}
+
 {% for post in posts %}
 
 <p>
-    <a href="/{{ post.last_modified.year }}/{{ post.last_modified.month }}/{{ post.last_modified.day }}/{{ post.title }}">{{ post.title }}</a>
+    <a href="/{{ post.last_modified.year }}/{{ post.last_modified.month }}/{{ post.last_modified.day }}/{{ post.title }}">
+        {{ post.title }}
+    </a>
 </p>
 
 {% endfor %}
+
+{% else %}
+
+<p>There are not any posts :(</p>
+
+{% endif %}
 
 {% endblock %}

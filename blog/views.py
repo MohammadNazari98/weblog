@@ -12,8 +12,8 @@ def index(request):
 
 @require_GET
 def posts(request):
-    posts = get_list_or_404(Post.published)
-    return render(request, 'blog/posts.html', {'posts': posts})
+        posts = Post.published.all()
+        return render(request, 'blog/posts.html', {'posts': posts})
 
 
 def post(request, year, month, day, title):
