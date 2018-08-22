@@ -10,6 +10,11 @@ STATUS_CHOICES = (
 )
 
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_enable=True, status=2)
+
+
 class Post(models.Model):
     title = models.CharField(max_length=120, null=False, blank=False)
     content = models.TextField(null=False, blank=False)
@@ -18,6 +23,7 @@ class Post(models.Model):
     # TODO: publish time
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     author = models.ForeignKey(AUTH_USER_MODEL)
+    published = PublishedManager()
     is_enable = models.BooleanField(default=True)
 
     def __str__(self):
