@@ -10,9 +10,9 @@
 
 {% for post in posts %}
 
-<a href="/{{ post.last_modified.year }}/{{ post.last_modified.month }}/{{ post.last_modified.day }}/{{ post.title }}">{{ post.title }}</a>
-
-<br>
+<p>
+    <a href="/{{ post.last_modified.year }}/{{ post.last_modified.month }}/{{ post.last_modified.day }}/{{ post.title }}">{{ post.title }}</a>
+</p>
 
 {% endfor %}
 
