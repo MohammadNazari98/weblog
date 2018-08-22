@@ -10,7 +10,7 @@ STATUS_CHOICES = (
 )
 
 
-class PublishedManager(models.Manager):
+class PublishedPostsManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_enable=True, status=2).order_by('-last_modified')
 
@@ -23,7 +23,7 @@ class Post(models.Model):
     # TODO: publish time
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     author = models.ForeignKey(AUTH_USER_MODEL)
-    published = PublishedManager()
+    published = PublishedPostsManager()
     objects = models.Manager()
     is_enable = models.BooleanField(default=True)
 
@@ -31,12 +31,19 @@ class Post(models.Model):
         return f'{self.author} --> {self.title}'
 
 
+class ActivesCommentsManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_enable=True).order_by('-created_time')
+
+
 class Comment(models.Model):
     content = models.TextField(null=False, blank=False)
     created_time = models.DateTimeField('sent time', auto_now_add=True)
     name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(null=False, blank=False)
-    post = models.ForeignKey(Post)
+    post = models.ForeignKey(Post, related_name='comments')
+    actives = ActivesCommentsManager()
+    objects = models.Manager()
     is_enable = models.BooleanField(default=False)
 
     def __str__(self):
