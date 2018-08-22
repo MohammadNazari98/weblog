@@ -30,6 +30,12 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.author} --> {self.title}'
 
+    def count_of_likes(self):
+        return self.likes.filter(is_like=True).count()
+
+    def count_of_dislikes(self):
+        return self.likes.filter(is_like=False).count()
+
 
 class ActivesCommentsManager(models.Manager):
     def get_queryset(self):
@@ -44,7 +50,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, related_name='comments')
     actives = ActivesCommentsManager()
     objects = models.Manager()
-    is_enable = models.BooleanField(default=False)
+    is_enable = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name} --> {self.post.title}'
