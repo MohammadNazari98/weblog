@@ -12,7 +12,7 @@ STATUS_CHOICES = (
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_enable=True, status=2)
+        return super().get_queryset().filter(is_enable=True, status=2).order_by('-last_modified')
 
 
 class Post(models.Model):
