@@ -4,7 +4,9 @@ from .models import Post, Comment, Like
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    pass
+    # return all posts even Drafts
+    def get_queryset(self, request):
+        return Post.objects.all()
 
 
 admin.site.register(Comment)
