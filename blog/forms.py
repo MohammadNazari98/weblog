@@ -12,3 +12,8 @@ class AddNewLike(forms.ModelForm):
     class Meta:
         model = Like
         fields = ('name', 'email', 'is_like')
+
+
+class Login(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)

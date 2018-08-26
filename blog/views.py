@@ -1,13 +1,37 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
+from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db.utils import IntegrityError
-from .forms import AddNewComment, AddNewLike
+from .forms import AddNewComment, AddNewLike, Login
+from django.views import View
 from .models import Post
 
 
 def index(request):
     return render(request, 'blog/index.html')
+
+
+class LoginView(View):
+    def get(self, request):
+        login_form = Login()
+        return render(request, 'blog/login.html', {'login_form': login_form})
+
+    def post(self, request):
+        login_form = Login(request.POST)
+
+        if login_form.is_valid():
+            cleaned_data = login_form.cleaned_data
+
+            user = authenticate(username=cleaned_data['username'], password=cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                result = {'title': 'success', 'body': 'you successfully login', 'url': request.path}
+            else:
+                result = {'title': 'failed', 'body': 'can\'t login :((', 'url': request.path}
+
+            return render(request, 'blog/result.html', result)
 
 
 @require_GET
