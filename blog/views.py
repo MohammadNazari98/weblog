@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db.utils import IntegrityError
-from .forms import AddNewComment, AddNewLike, Login
 from django.views import View
+
+from .forms import AddNewComment, AddNewLike, Login
 from .models import Post
 
 
@@ -36,13 +36,14 @@ class LoginView(View):
 
 @require_GET
 def posts(request):
-        posts = Post.published.all()
-        return render(request, 'blog/posts.html', {'posts': posts})
+    posts = Post.published.all()
+    return render(request, 'blog/posts.html', {'posts': posts})
 
 
 def post(request, year, month, day, url):
-    # TODO: using date for filtering post
-    post = get_object_or_404(Post.published, url=url)
+    year, month, day = int(year), int(month), int(day)
+    post = get_object_or_404(Post.published, url=url, publish_date__year=year, publish_date__month=month,
+                             publish_date__day=day)
 
     if request.method == 'GET':
         comment_form = AddNewComment()
@@ -56,9 +57,13 @@ def post(request, year, month, day, url):
 
             if like_form.is_valid():
                 new_like = like_form.save(commit=False)
-                # TODO: using date for filtering post
-                post_url = request.path.split('/')[-2]
-                post = Post.published.get(url=post_url)
+
+                current_url = request.path.split('/')
+                year, month, day = current_url[1], current_url[2], current_url[3]
+                post_title = current_url[-2]
+
+                post = Post.published.get(url=post_title, publish_date__year=year, publish_date__month=month,
+                                          publish_date__day=day)
                 try:
                     new_like.post = post
                     new_like.save()
@@ -77,9 +82,13 @@ def post(request, year, month, day, url):
 
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
-                # TODO: using date for filtering post
-                post_url = request.path.split('/')[-2]
-                post = Post.published.get(url=post_url)
+
+                current_url = request.path.split('/')
+                year, month, day = current_url[1], current_url[2], current_url[3]
+                post_title = current_url[-2]
+
+                post = Post.published.get(url=post_title, publish_date__year=year, publish_date__month=month,
+                                          publish_date__day=day)
                 try:
                     new_comment.post = post
                     new_comment.save()
