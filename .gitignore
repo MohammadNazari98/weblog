@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
 .idea/
+
 weblog/local_settings.py
 notes.txt

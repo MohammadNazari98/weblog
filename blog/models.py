@@ -1,7 +1,8 @@
 from datetime import datetime
 from django.db import models
-from weblog.settings import AUTH_USER_MODEL
 from django.core.exceptions import ValidationError
+
+from weblog.settings import AUTH_USER_MODEL
 
 
 class PublishedPostsManager(models.Manager):
@@ -23,9 +24,11 @@ class Post(models.Model):
     title = models.CharField(max_length=120)
     url = models.SlugField(max_length=120, db_index=True, allow_unicode=True, default='')
     content = models.TextField()
+
     created_time = models.DateTimeField('created time', auto_now_add=True)
     last_modified = models.DateTimeField('updated time', auto_now=True)
     publish_date = models.DateField('publish date', null=True)
+
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     author = models.ForeignKey(AUTH_USER_MODEL)
     is_enable = models.BooleanField(default=True)
@@ -39,6 +42,7 @@ class Post(models.Model):
     def clean(self):
         if self.status == Post.DRAFT_STATUS and self.publish_date is not None:
             raise ValidationError('Draft posts can\'t have publish date.')
+
         if self.status == Post.PUBLISH_STATUS and self.publish_date is None:
             raise ValidationError('Publication posts should have publish date.')
 
@@ -55,11 +59,11 @@ class ActivesCommentsManager(models.Manager):
 
 
 class Comment(models.Model):
-    content = models.TextField()
-    created_time = models.DateTimeField('sent time', auto_now_add=True)
     name = models.CharField(max_length=50)
     email = models.EmailField()
     post = models.ForeignKey(Post, related_name='comments')
+    content = models.TextField()
+    created_time = models.DateTimeField('sent time', auto_now_add=True)
     is_enable = models.BooleanField(default=True)
 
     actives = ActivesCommentsManager()
@@ -75,8 +79,8 @@ class Comment(models.Model):
 class Like(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField()
-    is_like = models.BooleanField(default=True)
     post = models.ForeignKey(Post, related_name='likes')
+    is_like = models.BooleanField(default=True)
 
     class Meta:
         unique_together = ('post', 'email')
