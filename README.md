@@ -9,11 +9,11 @@
 ```
 git clone https://github.com/red9bit/weblog.git && cd weblog/
 pip install -r requirements.txt
-touch weblog/db_config.py
+touch weblog/local_settings.py
 ```
-4. add these following variables into weblog/db_config.py file:
+4. add these following variables into weblog/local_settings.py file:
 ```
-  NAME = 'YOUR DATABASE NAME'
-  USER = 'YOUR DATABASE USER'
-  PASSWORD = 'YOUR DATABASE PASSWORD'
+  DB_NAME = 'YOUR DATABASE NAME'
+  DB_USER = 'YOUR DATABASE USER'
+  DB_PASSWORD = 'YOUR DATABASE PASSWORD'
 ```
