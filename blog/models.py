@@ -1,11 +1,14 @@
+from datetime import datetime
 from django.db import models
 from weblog.settings import AUTH_USER_MODEL
+from django.core.exceptions import ValidationError
 
 
 class PublishedPostsManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
-            is_enable=True, status=Post.PUBLISH_STATUS).order_by('-last_modified')
+            is_enable=True, status=Post.PUBLISH_STATUS, publish_date__lte=datetime.now().date()).order_by(
+            '-publish_date', '-last_modified')
 
 
 class Post(models.Model):
@@ -22,7 +25,7 @@ class Post(models.Model):
     content = models.TextField()
     created_time = models.DateTimeField('created time', auto_now_add=True)
     last_modified = models.DateTimeField('updated time', auto_now=True)
-    # TODO: publish time
+    publish_date = models.DateField('publish date', null=True)
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     author = models.ForeignKey(AUTH_USER_MODEL)
     is_enable = models.BooleanField(default=True)
@@ -32,6 +35,12 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.author} --> {self.title}'
+
+    def clean(self):
+        if self.status == Post.DRAFT_STATUS and self.publish_date is not None:
+            raise ValidationError('Draft posts can\'t have publish date.')
+        if self.status == Post.PUBLISH_STATUS and self.publish_date is None:
+            raise ValidationError('Publication posts should have publish date.')
 
     def count_of_likes(self):
         return self.likes.filter(is_like=True).count()
