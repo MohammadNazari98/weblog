@@ -8,16 +8,16 @@
 
 {% block content %}
 
-<p>Title: {{ post.title }}</p>
-<p>Content: {{ post.content }}</p>
-<p>Date: {{ post.last_modified }}</p>
-<p>Author: {{ post.author.username }}</p>
+<h3>{{ post.title }}</h3>
+<p>{{ post.content|linebreaksbr }}</p>
+<hr>
+<p>Published by {{ post.author }}, {{ post.last_modified }}</p>
 <hr>
 {% if post.comments.all %}
 <p>Comments:</p>
 <ul>
     {% for comment in post.comments.all %}
-        <li>{{ comment.content }}</li>
+        <li>{{ comment.content|linebreaksbr }}</li>
     {% endfor %}
 </ul>
 {% else %}
@@ -25,8 +25,7 @@
 {% endif %}
 
 <hr>
-<p>likes: {{ post.count_of_likes }}</p>
-<p>dislikes: {{ post.count_of_dislikes }}</p>
+<p>likes: {{ post.count_of_likes }} | dislikes: {{ post.count_of_dislikes }}</p>
 
 
 <hr>
