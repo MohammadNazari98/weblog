@@ -11,7 +11,7 @@
 <h3>{{ post.title }}</h3>
 <p>{{ post.content|linebreaksbr }}</p>
 <hr>
-<p>Published by {{ post.author }}, {{ post.last_modified }}</p>
+<p>Published by {{ post.author }}, {{ post.publish_date }}</p>
 <hr>
 {% if post.comments.all %}
 <p>Comments:</p>

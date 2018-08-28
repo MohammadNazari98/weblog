@@ -13,7 +13,7 @@
 {% for post in posts %}
 
 <p>
-    <a href="/{{ post.last_modified.year }}/{{ post.last_modified.month }}/{{ post.last_modified.day }}/{{ post.url }}">
+    <a href="/{{ post.publish_date.year }}/{{ post.publish_date.month }}/{{ post.publish_date.day }}/{{ post.url }}">
         {{ post.title }}
     </a>
 </p>
