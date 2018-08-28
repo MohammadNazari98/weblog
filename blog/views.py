@@ -40,9 +40,9 @@ def posts(request):
         return render(request, 'blog/posts.html', {'posts': posts})
 
 
-def post(request, year, month, day, title):
+def post(request, year, month, day, url):
     # TODO: using date for filtering post
-    post = get_object_or_404(Post.published, title=title)
+    post = get_object_or_404(Post.published, url=url)
 
     if request.method == 'GET':
         comment_form = AddNewComment()
@@ -57,8 +57,8 @@ def post(request, year, month, day, title):
             if like_form.is_valid():
                 new_like = like_form.save(commit=False)
                 # TODO: using date for filtering post
-                post_title = request.path.split('/')[-2]
-                post = Post.published.get(title=post_title)
+                post_url = request.path.split('/')[-2]
+                post = Post.published.get(url=post_url)
                 try:
                     new_like.post = post
                     new_like.save()
@@ -78,8 +78,8 @@ def post(request, year, month, day, title):
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
                 # TODO: using date for filtering post
-                post_title = request.path.split('/')[-2]
-                post = Post.published.get(title=post_title)
+                post_url = request.path.split('/')[-2]
+                post = Post.published.get(url=post_url)
                 try:
                     new_comment.post = post
                     new_comment.save()

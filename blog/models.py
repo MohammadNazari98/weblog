@@ -18,6 +18,7 @@ class Post(models.Model):
     )
 
     title = models.CharField(max_length=120)
+    url = models.SlugField(max_length=120, db_index=True, allow_unicode=True, default='')
     content = models.TextField()
     created_time = models.DateTimeField('created time', auto_now_add=True)
     last_modified = models.DateTimeField('updated time', auto_now=True)
